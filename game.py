@@ -1,15 +1,17 @@
 import pygame,random, textos
 
 #Tamaño de pantalla
-ANCHO = 800
-ALTO = 500
-vel = 8
-live = 100
-enemy_live = 100
+ANCHO = 1200 #Ancho de la pantalla
+ALTO = 500 #Alto de la pantalla
+vel = 6.5 #Velocidad de las naves
+live = 100 # Vida del jugador 1 o jugador de la izquierda 
+enemy_live = 100 #Vida del jugador 2 o jugador de la derecha
+x = 0 #coordenada x de la pantalla
 
-puntuacion = 0
-enemy_puntuacion = 0
+puntuacion = 0 #puntacion jugador 1 o jugador de la izquierda
+enemy_puntuacion = 0#puntuacion jugador 2 o jugador de la derecha
 
+#Tipos de letras
 arial = pygame.font.match_font("Arial")
 gotica = pygame.font.match_font("Gotica")
 #Aqui especificamos todo lo del jugador
@@ -20,38 +22,38 @@ class Player(pygame.sprite.Sprite):
         super().__init__()
         #Rectangulo del jugador
         self.nave = pygame.image.load("navesota.png").convert_alpha() #esta es la imagen del jugador
-        self.image = pygame.transform.scale(self.nave,(100,70))#Transforma la escala de la imagen
-        self.image.set_colorkey((0,0,0))
+        self.image = pygame.transform.scale(self.nave,(90,60))#Transforma la escala de la imagen
+        self.image.set_colorkey((0,0,0))#El color que este en el parametro lo elimina en este caso el negro del fondo lo elimina
 
         #Obtiene el rectangulo de la imagen (hitbox o sprite)
         self.rect =  self.image.get_rect()
         #centra el sprite o hitbox
         self.rect.center = (0, random.randrange(ALTO))
 
-        self.cadencia = 180
-        self.ultimo_disparo = pygame.time.get_ticks()
+        self.cadencia = 290 #El tiempo entre disparos
+        self.ultimo_disparo = pygame.time.get_ticks()#ultimo disparo para tener como referencia en cuanto tiempo disparar el otro
 
 
 
     #update pertenece a la clase sprite
     def update(self):
 
-
+        #Define el movimiento de el player o jugador detecta la tecla presionada
         userInput = pygame.key.get_pressed()
-        if userInput[pygame.K_a]:
+        if userInput[pygame.K_a]: # Con la letra a se vueve hacia la izquierda
             self.rect.x -= vel
-        if userInput[pygame.K_d]:
+        if userInput[pygame.K_d]: # Con la letra d se mueve hacia la derecha
             self.rect.x += vel
-        if userInput[pygame.K_w]:
+        if userInput[pygame.K_w]: # con la letra w se mueve hacia arriba
             self.rect.y -= vel
-        if userInput[pygame.K_s]:
+        if userInput[pygame.K_s]: # con la letra s se mueve hacia abajo
             self.rect.y += vel
 
-        if userInput[pygame.K_f]:
+        if userInput[pygame.K_q]: # con la letra  q adisapara
             puslacion_ahora = pygame.time.get_ticks()#Esto indica la tecla presionada 
             if puslacion_ahora - self.ultimo_disparo > self.cadencia:#si a pasado mas de el valor de self.cadencia en milisegundo entonces se cumple la condicion
-                jugador.disparo()
-                s_disparo.play()
+                jugador.disparo()#llama a la funcion disparo
+                s_disparo.play()#reproduce el sonido de disparo
 
                 self.ultimo_disparo = puslacion_ahora #Resetea el tiempo para que el disparo se vuelva activar dependiendo de la cadencia
 
@@ -70,14 +72,10 @@ class Player(pygame.sprite.Sprite):
         
         if self.rect.right > ANCHO:
             self.rect.right = ANCHO
-        # #Actualiza esto cada vuelta de bucle
-        # self.rect.x += 10
-        # if self.rect.left > ANCHO: #rect.top es el limite de arriba de la pantalla
-        #     self.rect.right = 8 #rect.bottom es el limite de abajo de la pantalla
-
+       
     def disparo(self):
-        bala = Disparos(self.rect.centerx, self.rect.centery)
-        balas.add(bala)
+        bala = Disparos(self.rect.centerx, self.rect.centery) #ES una instancia de la clase disparo con su ubicacion inicial
+        balas.add(bala) #la instancia se agrega a la lista balas
 #Aqui especificamos todo lo del jugador
 class Oponente(pygame.sprite.Sprite):
 
@@ -85,36 +83,36 @@ class Oponente(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
         #Rectangulo del jugador
-        self.oponente = pygame.image.load("enemigo.jpg").convert_alpha() #esta es la imagen del jugador
-        self.image = pygame.transform.scale(self.oponente,(100,70))
-        self.image.set_colorkey((0,0,0))
+        self.oponente = pygame.image.load("enemigo.png").convert_alpha() #esta es la imagen del jugador
+        self.image = pygame.transform.scale(self.oponente,(90,60))#Transforma la escala del jugador para que sea mas pequeña
+        self.image.set_colorkey((0,0,0))#El color que este en el parametro desaparece
 
         #Obtiene el rectangulo de la imagen (hitbox o sprite)
         self.rect =  self.image.get_rect()
         #centra el sprite o hitbox
-        self.rect.center = (ANCHO - self.rect.width, ALTO // 2)
-        self.cadencia = 180
+        self.rect.center = (ANCHO - self.rect.width, random.randrange(ALTO)) # En que posicion aparece al inicio
+        self.cadencia = 290 # la velocidad entre disparos
         self.ultimo_disparo = pygame.time.get_ticks()
     
     def update(self):
 
-
+        #MOVIMIENTO DEL OPONENTE O JUGADOR 2
         userInput = pygame.key.get_pressed()
-        if userInput[pygame.K_LEFT]:
+        if userInput[pygame.K_LEFT]: # Se mueve a la izquierda
             self.rect.x -= vel
-        if userInput[pygame.K_RIGHT]: 
+        if userInput[pygame.K_RIGHT]: #Se mueve a la derecha 
             self.rect.x += vel
-        if userInput[pygame.K_UP]:
+        if userInput[pygame.K_UP]: # Se mueve hacia arriba
             self.rect.y -= vel
-        if userInput[pygame.K_DOWN]:
+        if userInput[pygame.K_DOWN]: # Se mueve hacia abajo
             self.rect.y += vel
 
-        if userInput[pygame.K_SPACE]:
+        if userInput[pygame.K_RSHIFT]: # dispara con el shift derechow
             puslacion_ahora = pygame.time.get_ticks()#Esto indica la tecla presionada 
             if puslacion_ahora - self.ultimo_disparo > self.cadencia:#si a pasado mas de el valor de self.cadencia en milisegundo entonces se cumple la condicion
-                enemy.disparo()
-                s_disparo.play()
-                self.ultimo_disparo = puslacion_ahora
+                enemy.disparo()#Llama al metodo disparo
+                s_disparo.play()#reproduce el sonido 
+                self.ultimo_disparo = puslacion_ahora #Actualiza el ultimo disparo para que se reinice y vuelva a repetir el ciclo
               
 
         #limita la parte superior para que el jugador no pase
@@ -142,30 +140,30 @@ class Disparos(pygame.sprite.Sprite):
 
     def __init__(self, x, y):
         super().__init__()
-        self.image = pygame.transform.scale(pygame.image.load("disparo.jpeg").convert(),(20,20))
+        self.image = pygame.transform.scale(pygame.image.load("bala.png").convert(),(20,20))#Carga la imagen y transforma su escla en 20 de ancho y 20 de alto
         self.image.set_colorkey((0,0,0))
         self.rect = self.image.get_rect()#obtenemos el rectangulo de la imagen
         self.rect.bottom = y
         self.rect.centerx = x #va a centrarlo en la pocicision en medio del rectangulo del jugador o enemigo
 
     def update(self): #nos sirve para actualizar la posicion de la bala
-        self.rect.x += 15
+        self.rect.x += 10 #Velocidad de la bala
         if self.rect.right > ANCHO:
-            self.kill()
+            self.kill() # Si la bala supera el ancho de la pantalla se elimina
 
 
 class Disparos_enemigo(pygame.sprite.Sprite):
 
     def __init__(self, x, y):
         super().__init__()
-        self.image = pygame.transform.scale(pygame.image.load("disparo.jpeg").convert(),(20,20))#Carga la imagen y le cambia su escala
+        self.image = pygame.transform.scale(pygame.image.load("bala_2.png").convert(),(20,20))#Carga la imagen y transforma su escala en 20 , 20
         self.image.set_colorkey((0,0,0))
         self.rect = self.image.get_rect()#obtenemos el rectangulo de la imagen
         self.rect.bottom = y
         self.rect.centerx = x #va a centrarlo en la pocicision en medio del rectangulo del jugador o enemigo
 
     def update(self): #nos sirve para actualizar la posicion de la bala
-        self.rect.x -= 15 #Define la velocidad con la que va la bala
+        self.rect.x -= 10 #Define la velocidad con la que va la bala
         if self.rect.right > ANCHO: #si el borde derecho de la hitbox de la bala(self.rect) es mayor al ancho de la pantalla entonces se elimina
             self.kill()
         
@@ -180,7 +178,10 @@ pygame.init()#inicializamos  pygame
 
 screen = pygame.display.set_mode((ANCHO, ALTO))
 pygame.display.set_caption("WHILEGAME")#le coloca un nombre a la ventana que en este caso es whilegame
-clock = pygame.time.Clock()#Define un relojo que se va utilizar para los fps
+clock = pygame.time.Clock()#Define un reloj que se va utilizar para los fps
+
+background_simple = pygame.image.load("fondo_pixelart.png").convert() #Carga la imagen del fondo
+background = pygame.transform.scale(background_simple,(2500,700))#Transforma la escala de la imagen
 
 s_disparo = pygame.mixer.Sound("disparo.mp3")#Carga el sonido del disparo
 
@@ -194,8 +195,6 @@ e_balas = pygame.sprite.Group()#instancia de la clase sprite group balas enemiga
 jugador = Player() #instancia de la clase player    
 enemy = Oponente() #instancia de la clase Oponente
 
-fondo = pygame.image.load("fondo_pixelart.jpg").convert()
-
 sprites.add(jugador) # le adañimmos a jugador para que tenga la imagen del jugador
 enemigos.add(enemy) # le adañimos a enemy parar que tenga la imagen del enemigos (jugador 2)
 
@@ -204,7 +203,7 @@ run = True # si run es true funciona el bucle si es falso se cierra la ventana
 
 
 
-while run:
+while run: #inicia el bucle
 
 
     clock.tick(60)#Define los fps del jugador
@@ -221,47 +220,52 @@ while run:
     e_balas.update() # actualiza todos los sprites de las balas enemigas(player2)
 
  
-
-    # colision = pygame.sprite.groupcollide(enemigos,balas, False, True)#esto nos permite utilizar un sprite contra un grupo
     
-    # if colision:
-    #     live -= 5
 
     #Zona de dibujo    
-    screen.fill((255,0,0))# primer parametro R(rojo) G(verde) B(blue)
+  
+    x_final = x % background.get_rect().width# Se divide el valor de x por el ancho de la imagen background y devuelve el resto
 
-
+    
+    screen.blit(background, (x_final - background.get_rect().width, 0))#Esto hace que la imagen se cargue en bucle
+    if x_final < ANCHO:
+        screen.blit(background,(x_final, 0))
+    
+    x -= 1#Es la velocidad con la que queremos que se vaya moviendo el fondo 
 
     # Si live es menor a 0 muestra el texto game over (live es la vida del jugador de la izquierda)
     if live <= 0  :
-        screen.fill((0,0,0))
-        
         over = textos.show_text(screen, gotica, "GAME OVER", (255,255,255), 50, (ANCHO / 2 - 150), (ALTO / 2 - 50))
         win_1 = textos.show_text(screen, gotica, "PLAYER 2 WIN", (255,255,255), 50, (ANCHO / 2 - 150), (ALTO / 2 ))
-       
+        run = False       
 
     # Si enemy_live es menor a 0 muestra el texto game over (enemy_live es la vida del jugador de la derecha)
     if enemy_live <= 0 :
         over = textos.show_text(screen, gotica, "GAME OVER", (0,0,0), 50, (ANCHO / 2 - 150), (ALTO / 2 - 50))
         win_2 = textos.show_text(screen, gotica, "PLAYER 1 WIN", (0,0,0), 50, (ANCHO / 2 - 150), (ALTO / 2 ))
+        run = False
+    colision = pygame.sprite.groupcollide(sprites,e_balas, False, True) # detecta la colision de las balas del jugador 2 con cualquier de el sprite el jugador 1
 
-    colision = pygame.sprite.groupcollide(sprites,e_balas, False, True) # si las balas chocan con el player 1
+    e_colision = pygame.sprite.groupcollide(enemigos, balas, False, True) # detecta la colision de las balas del jugador 1 con cualquiera de la lista de enemigos
 
-    e_colision = pygame.sprite.groupcollide(enemigos, balas, False, True)
 
-    bala_colision = pygame.sprite.groupcollide(e_balas, balas, False, True)#Colision de balas si las balas chocan entre si mismas se desaparecen
+    #codigo en mantinemiento lo que esta desde la linea 260 - 266
 
-    if bala_colision:
-        for i in e_balas:
-            i.kill()
+    # e_bala_colision = pygame.sprite.groupcollide(e_balas, balas, True, True)#Colision de balas si las balas chocan entre si mismas se desaparecen
+
+    
+    
+    # if e_bala_colision:
+    #     for i in e_balas:
+    #         i.kill()
 
     if colision : #si las balas chocan con el player 1 le baja 6 puntos a live
-        live -= 6
+        live -= 2.5
         enemy_puntuacion += 1
 
         
     if e_colision: # si las balas chocan con el player2 le baja 6 puntos a enemy live
-        enemy_live -= 6
+        enemy_live -= 2.5
         puntuacion += 1
 
     
@@ -280,12 +284,14 @@ while run:
     pygame.draw.rect(screen,(0,0,255), (10,10,live,20)) #dibuja el rectangulo la vidad del jugador 1
     pygame.draw.rect(screen,(0,255,0), ((ANCHO - 110),10,enemy_live,20))# dibuja el rectangulo de la vida del jugador 2
     
-    p1_score = textos.show_text(screen, gotica,"SCORE: {0}".format(puntuacion), (0,0,0), 20,30,450) #Puntuacion del player 1
-    p2_score = textos.show_text(screen, gotica,"SCORE: {0}".format(enemy_puntuacion), (0,0,0), 20,(ANCHO - 100),450)#Puntuacion del player 2
+    p1_score = textos.show_text(screen, gotica,"SCORE: {0}".format(puntuacion), (255,255,255), 20,30,450) #Puntuacion del player 1
+    p2_score = textos.show_text(screen, gotica,"SCORE: {0}".format(enemy_puntuacion), (255,255,255), 20,(ANCHO - 100),450)#Puntuacion del player 2
 
+    p1_salud = textos.show_text(screen, gotica,"SALUD: {0}".format(int(live)), (255,255,255), 20,10,30) #Muestra el texto de la salud del primer jugador
+    p2_salud = textos.show_text(screen, gotica,"SALUD: {0}".format(int(enemy_live)), (255,255,255), 20,(ANCHO - 110),30)#Muestra el texto de la salud del segundo jugador
     
 
-    #dibuja los sprites, enemigos, balas, balas enemigas = e_balas
+    #dibuja los sprites, enemigos, balas, balas enemigas y e_balas
     sprites.draw(screen)
     enemigos.draw(screen)
     balas.draw(screen)
