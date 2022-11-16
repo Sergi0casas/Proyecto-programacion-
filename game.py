@@ -8,6 +8,7 @@ live = 100 # Vida del jugador 1 o jugador de la izquierda
 enemy_live = 100 #Vida del jugador 2 o jugador de la derecha
 x = 0 #coordenada x de la pantalla
 
+imagen_ini = pygame.image.load("imagen_inicio.png") #Carga la imagend de la interfaz
 puntuacion = 0 #puntacion jugador 1 o jugador de la izquierda
 enemy_puntuacion = 0#puntuacion jugador 2 o jugador de la derecha
 
@@ -169,7 +170,16 @@ class Disparos_enemigo(pygame.sprite.Sprite):
         
 
 
-
+def ven_inicio(inicio,window):
+    window.blit(imagen_ini,(0,0))
+    pygame.display.update()
+    for event in pygame.event.get():
+        if event.type==pygame.QUIT:
+            pygame.quit()
+        elif event.type==pygame.KEYDOWN:
+            if event.key:
+                return False
+    return True
 
 
 #comienzo del juego
@@ -200,11 +210,13 @@ enemigos.add(enemy) # le adañimos a enemy parar que tenga la imagen del enemigo
 
 run = True # si run es true funciona el bucle si es falso se cierra la ventana
 
-
+inicio = True
 
 
 while run: #inicia el bucle
 
+    while inicio:    #Genera el bucle de la interfaz
+        inicio=ven_inicio(inicio,screen)
 
     clock.tick(60)#Define los fps del jugador
     for event in pygame.event.get():
