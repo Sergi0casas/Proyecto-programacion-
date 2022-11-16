@@ -284,10 +284,10 @@ while run: #inicia el bucle
 
     if jugador.rect.colliderect(enemy.rect): #si la hitbox del jugador choca con la hitbox del enemigo live disminuye la vida de player 1 (live)
         live -= 0.3
-        pygame.draw.rect(screen, (255,255,255), jugador.rect, 4)
+        pygame.draw.rect(screen, (255,0,0), jugador.rect, 4)
 
     if enemy.rect.colliderect(jugador.rect): #si la hitbox del enemigo choca con la hitbox del jugador enemy_live disminuye la vida del player2
-        pygame.draw.rect(screen, (255,255,255), enemy.rect, 4)
+        pygame.draw.rect(screen, (255,0,0), enemy.rect, 4)
         enemy_live -= 0.3
 
     
